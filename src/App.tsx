@@ -35,8 +35,19 @@ export function App() {
     }
   }
 
-  function handleClickCell(row: number, column: number) {
+  async function handleClickCell(row: number, column: number) {
     console.log(row, column)
+    const url = `https://minesweeper-api.herokuapp.com/games/${game.id}/check`
+    const body = { row: row, col: column }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) {
+      const newGame = await response.json()
+      setGame(newGame)
+    }
   }
 
   return (
