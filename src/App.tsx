@@ -50,6 +50,26 @@ export function App() {
     }
   }
 
+  async function handleRightClickCell(
+    event: React.MouseEvent,
+    row: number,
+    column: number
+  ) {
+    event.preventDefault()
+    console.log(row, column)
+    const url = `https://minesweeper-api.herokuapp.com/games/${game.id}/flag`
+    const body = { row: row, col: column }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) {
+      const newGame = await response.json()
+      setGame(newGame)
+    }
+  }
+
   return (
     <div>
       <h1>
@@ -62,6 +82,9 @@ export function App() {
               <li
                 key={columnIndex}
                 onClick={() => handleClickCell(rowIndex, columnIndex)}
+                onContextMenu={(e) =>
+                  handleRightClickCell(e, rowIndex, columnIndex)
+                }
               >
                 {cell}
               </li>
